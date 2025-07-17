@@ -10,7 +10,7 @@ export class PrismaService
 {
   constructor(private readonly redisService: RedisService) {
     super({
-      log: ['query', 'info', 'warn', 'error'], // Opcional: logs para monitoreo
+      log: ['info', 'warn', 'error'], // Opcional: logs para monitoreo
     });
   }
 
@@ -34,7 +34,7 @@ export class PrismaService
       { id: number; name: string }[]
     >`SELECT id, CONCAT(apellido, ', ', nombre) AS name FROM datos;`;
 
-    console.log('Lista total consultada');
+    console.log('\x1b[95mLista total consultada\x1b[0m');
     return participantes;
   }
 
@@ -83,7 +83,7 @@ export class PrismaService
 
       const nombre = participante[0].nombre || 'Desconocido';
       const apellido = participante[0].apellido || 'Desconocido';
-      console.log(`Se consultó a ${nombre} ${apellido}`);
+      console.log(`Se consultó a \x1b[33m${nombre} ${apellido}\x1b[0m`);
 
       return participante;
     } catch (error) {
@@ -161,7 +161,9 @@ export class PrismaService
 
       const nombre = participante[0].nombre || 'Desconocido';
       const apellido = participante[0].apellido || 'Desconocido';
-      console.log(`Se consultó a ${nombre} ${apellido}`);
+      console.log(
+        `Se consultó \x1b[4mtoda la información\x1b[24m de \x1b[33m${nombre} ${apellido}\x1b[0m`,
+      );
 
       return participante;
     } catch (error) {
@@ -183,7 +185,9 @@ export class PrismaService
 
     const nombre = participante?.[0]?.nombre || 'Desconocido';
     const apellido = participante?.[0]?.apellido || 'Desconocido';
-    console.log(`La asistencia de ${nombre} ${apellido} ha sido registrada`);
+    console.log(
+      `\x1b[32mLa asistencia de \x1b[33m${nombre} ${apellido}\x1b[32m ha sido registrada\x1b[0m`,
+    );
 
     return { message: 'Asistencia actualizada con éxito' };
   }

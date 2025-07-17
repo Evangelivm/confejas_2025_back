@@ -93,6 +93,7 @@ model habitacion {
   id_habitacion Int     @id @default(autoincrement())
   id_sesion     Int
   habitacion    String  @db.VarChar(45)
+  capacidad     String  @db.VarChar(45)
   datos         datos[]
   sesion        sesion  @relation(fields: [id_sesion], references: [id_sesion], onDelete: NoAction, onUpdate: NoAction, map: "fk_habitacion_sesion1")
 
