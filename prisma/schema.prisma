@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model asistencia {
+  id_asistencia    Int                @id
+  datos_id         Int
+  asistio          asistencia_asistio
+  id_participacion Int
+  datos            datos              @relation(fields: [datos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_asistencia_datos1")
+  participacion    participacion      @relation(fields: [id_participacion], references: [id_participacion], onDelete: NoAction, onUpdate: NoAction, map: "fk_asistencia_participacion1")
+
+  @@index([datos_id], map: "fk_asistencia_datos1_idx")
+  @@index([id_participacion], map: "fk_asistencia_participacion1_idx")
+}
+
+model barrio {
+  id_barrio Int     @id @default(autoincrement())
+  id_estaca Int
+  barrio    String  @db.VarChar(255)
+  id_sesion Int
+  estaca    estaca  @relation(fields: [id_estaca], references: [id_estaca], onDelete: NoAction, onUpdate: NoAction, map: "fk_barrio_estaca1")
+  sesion    sesion  @relation(fields: [id_sesion], references: [id_sesion], onDelete: NoAction, onUpdate: NoAction, map: "fk_barrio_sesion1")
+  datos     datos[]
+
+  @@index([id_estaca], map: "fk_barrio_estaca1_idx")
+  @@index([id_sesion], map: "fk_barrio_sesion1_idx")
+}
+
+model comp {
+  id_comp Int     @id @default(autoincrement())
+  comp    String  @db.VarChar(45)
+  datos   datos[]
+}
+
+model datos {
+  id            Int            @id @default(autoincrement())
+  nombre        String         @db.VarChar(255)
+  apellido      String         @db.VarChar(255)
+  edad          Int
+  cumplea_os    DateTime?      @map("cumpleaños") @db.Date
+  id_sesion     Int
+  id_estaca     Int
+  id_barrio     Int
+  id_comp       Int
+  id_habitacion Int
+  telefono      String?        @db.VarChar(45)
+  sexo          String         @db.VarChar(1)
+  tipo          datos_tipo
+  correo        String?        @db.VarChar(255)
+  talla         String?        @db.VarChar(45)
+  nom_c1        String?        @db.VarChar(45)
+  telef_c1      String?        @db.VarChar(45)
+  grupo_sang    String?        @db.VarChar(45)
+  miembro       datos_miembro?
+  enf_cronica   String?        @db.VarChar(500)
+  trat_med      String?        @db.VarChar(500)
+  seguro        String?        @db.VarChar(500)
+  alergia_med   String?        @db.VarChar(255)
+  asistencia    asistencia[]
+  barrio        barrio         @relation(fields: [id_barrio], references: [id_barrio], onDelete: NoAction, onUpdate: NoAction, map: "fk_datos_barrio1")
+  comp          comp           @relation(fields: [id_comp], references: [id_comp], onDelete: NoAction, onUpdate: NoAction, map: "fk_datos_comp1")
+  estaca        estaca         @relation(fields: [id_estaca], references: [id_estaca], onDelete: NoAction, onUpdate: NoAction, map: "fk_datos_estaca")
+  habitacion    habitacion     @relation(fields: [id_habitacion], references: [id_habitacion], onDelete: NoAction, onUpdate: NoAction, map: "fk_datos_habitacion1")
+  sesion        sesion         @relation(fields: [id_sesion], references: [id_sesion], onDelete: NoAction, onUpdate: NoAction, map: "fk_datos_sesion1")
+  salud         salud[]
+
+  @@index([id_barrio], map: "fk_datos_barrio1_idx")
+  @@index([id_comp], map: "fk_datos_comp1_idx")
+  @@index([id_estaca], map: "fk_datos_estaca_idx")
+  @@index([id_habitacion], map: "fk_datos_habitacion1_idx")
+  @@index([id_sesion], map: "fk_datos_sesion1_idx")
+}
+
+model estaca {
+  id_estaca Int      @id @default(autoincrement())
+  id_sesion Int
+  estaca    String   @db.VarChar(255)
+  barrio    barrio[]
+  datos     datos[]
+  sesion    sesion   @relation(fields: [id_sesion], references: [id_sesion], onDelete: NoAction, onUpdate: NoAction, map: "fk_estaca_sesion1")
+
+  @@index([id_sesion], map: "fk_estaca_sesion1_idx")
+}
+
+model habitacion {
+  id_habitacion Int     @id @default(autoincrement())
+  id_sesion     Int
+  habitacion    String  @db.VarChar(45)
+  datos         datos[]
+  sesion        sesion  @relation(fields: [id_sesion], references: [id_sesion], onDelete: NoAction, onUpdate: NoAction, map: "fk_habitacion_sesion1")
+
+  @@index([id_sesion], map: "fk_habitacion_sesion1_idx")
+}
+
+model participacion {
+  id_participacion Int          @id
+  participacion    String       @db.VarChar(45)
+  asistencia       asistencia[]
+}
+
+model salud {
+  id_salud       Int     @id @default(autoincrement())
+  datos_id       Int
+  razon_atencion String? @db.VarChar(600)
+  atencion_dada  String? @db.VarChar(600)
+  datos          datos   @relation(fields: [datos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_salud_datos1")
+
+  @@index([datos_id], map: "fk_salud_datos1_idx")
+}
+
+model sesion {
+  id_sesion  Int          @id @default(autoincrement())
+  sesion     String       @db.VarChar(45)
+  barrio     barrio[]
+  datos      datos[]
+  estaca     estaca[]
+  habitacion habitacion[]
+}
+
+enum asistencia_asistio {
+  Si
+  No
+}
+
+enum datos_tipo {
+  Staff
+  Participante
+}
+
+enum datos_miembro {
+  Si
+  No
+}
