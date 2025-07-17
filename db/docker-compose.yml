@@ -1,0 +1,22 @@
+services:
+  db:
+    image: mysql:8.0.42-debian
+    container_name: confejas_2025_back
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: XXXperu2020XXX.
+      MYSQL_DATABASE: confejas_2025
+      MYSQL_USER: devysalomon
+      MYSQL_PASSWORD: XXXperu2020XXX.
+    volumes:
+      - mysql_data:/var/lib/mysql # Volumen para persistir datos
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    external: true
+
+volumes:
+  mysql_data: # Define el volumen (Docker lo gestiona automáticamente)
