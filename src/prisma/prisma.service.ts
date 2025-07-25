@@ -111,8 +111,10 @@ export class PrismaService
           barrio: string;
           asistio: string;
           telefono: string;
+          nacimiento: Date;
           sexo: string;
           tipo: string;
+          talla: string;
           correo: string;
           nom_c1: string;
           telef_c1: string;
@@ -134,9 +136,11 @@ export class PrismaService
         d.estaca, 
         e.barrio,
         f.asistio,
-        a.telefono, 
+        a.telefono,
+        a.nacimiento,
         a.sexo, 
-        a.tipo, 
+        a.tipo,
+        a.talla, 
         a.correo, 
         a.nom_c1, 
         a.telef_c1, 
@@ -332,42 +336,42 @@ export class PrismaService
   //   return message ? JSON.parse(message) : null;
   // }
   // Método para obtener lista completa ordenada por compañía y sexo
-  // async getParticipantesOrdenados() {
-  //   try {
-  //     const participantes = await this.$queryRaw<
-  //       {
-  //         nombres: string;
-  //         sexo: string;
-  //         estaca: string;
-  //         barrio: string;
-  //         compañia: string;
-  //         habitacion: string;
-  //         asistio: string;
-  //       }[]
-  //     >`
-  //       SELECT
-  //         CONCAT(a.apellidos, ", ", a.nombres) AS nombres,
-  //         a.sexo AS sexo,
-  //         CONCAT("Estaca ", f.estaca) AS estaca,
-  //         e.barrio AS barrio,
-  //         a.compañia AS compañia,
-  //         c.habitacion AS habitacion,
-  //         d.asistio AS asistio
-  //       FROM participante a
-  //       JOIN habitacion c ON a.habitacion = c.habit_id
-  //       JOIN asistencia d ON a.id_part = d.id_part
-  //       JOIN barrio e ON a.barrio = e.id_barrio
-  //       JOIN estaca f ON a.estaca = f.est_id
-  //       ORDER BY a.compañia, a.sexo DESC, d.asistio DESC;
-  //     `;
+  async getParticipantesOrdenados() {
+    try {
+      const participantes = await this.$queryRaw<
+        {
+          nombres: string;
+          sexo: string;
+          estaca: string;
+          barrio: string;
+          comp: string;
+          habitacion: string;
+          asistio: string;
+        }[]
+      >`
+        SELECT
+          CONCAT(a.apellido, ", ", a.nombre) AS nombres,
+          a.sexo AS sexo,
+          CONCAT("Estaca ", f.estaca) AS estaca,
+          e.barrio AS barrio,
+          a.id_comp AS comp,
+          c.habitacion AS habitacion,
+          d.asistio AS asistio
+        FROM datos a
+        JOIN habitacion c ON a.id_habitacion = c.id_habitacion
+        JOIN asistencia d ON a.id = d.id_asistencia
+        JOIN barrio e ON a.id_barrio = e.id_barrio
+        JOIN estaca f ON a.id_estaca = f.id_estaca
+        ORDER BY a.id_comp, a.sexo DESC, d.asistio DESC;
+      `;
 
-  //     console.log('Lista ordenada consultada');
-  //     return participantes;
-  //   } catch (error) {
-  //     console.error('Error al consultar la lista ordenada:', error);
-  //     throw new Error('Error al consultar la lista ordenada de participantes');
-  //   }
-  // }
+      console.log('Lista ordenada consultada');
+      return participantes;
+    } catch (error) {
+      console.error('Error al consultar la lista ordenada:', error);
+      throw new Error('Error al consultar la lista ordenada de participantes');
+    }
+  }
   // async publishParticipantesOrdenados() {
   //   try {
   //     const participantes = await this.getParticipantesOrdenados();

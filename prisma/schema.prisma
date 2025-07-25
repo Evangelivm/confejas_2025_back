@@ -44,7 +44,7 @@ model datos {
   nombre        String         @db.VarChar(255)
   apellido      String         @db.VarChar(255)
   edad          Int
-  cumplea_os    DateTime?      @map("cumpleaños") @db.Date
+  nacimiento    DateTime?      @db.Date
   id_sesion     Int
   id_estaca     Int
   id_barrio     Int
@@ -62,7 +62,7 @@ model datos {
   enf_cronica   String?        @db.VarChar(500)
   trat_med      String?        @db.VarChar(500)
   seguro        String?        @db.VarChar(500)
-  alergia_med   String?        @db.VarChar(255)
+  alergia_med   String?        @db.VarChar(500)
   asistencia    asistencia[]
   barrio        barrio         @relation(fields: [id_barrio], references: [id_barrio], onDelete: NoAction, onUpdate: NoAction, map: "fk_datos_barrio1")
   comp          comp           @relation(fields: [id_comp], references: [id_comp], onDelete: NoAction, onUpdate: NoAction, map: "fk_datos_comp1")
@@ -107,11 +107,15 @@ model participacion {
 }
 
 model salud {
-  id_salud       Int     @id @default(autoincrement())
-  datos_id       Int
-  razon_atencion String? @db.VarChar(600)
-  atencion_dada  String? @db.VarChar(600)
-  datos          datos   @relation(fields: [datos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_salud_datos1")
+  id_salud            Int                   @id @default(autoincrement())
+  datos_id            Int
+  fecha_consulta      DateTime?             @db.DateTime(0)
+  motivo_consulta     String?               @db.VarChar(600)
+  tratamiento         String?               @db.VarChar(600)
+  seguimiento         Int                   @db.TinyInt
+  fecha_seguimiento   DateTime?             @db.DateTime(0)
+  medicinas_recetadas medicinas_recetadas[]
+  datos               datos                 @relation(fields: [datos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_salud_datos1")
 
   @@index([datos_id], map: "fk_salud_datos1_idx")
 }
@@ -123,6 +127,26 @@ model sesion {
   datos      datos[]
   estaca     estaca[]
   habitacion habitacion[]
+}
+
+model inventario_salud {
+  id_inventario_salud Int                   @id @default(autoincrement())
+  nombre              String                @db.VarChar(255)
+  descripcion         String?               @db.VarChar(255)
+  stock               Int
+  dosis               String?               @db.VarChar(45)
+  medicinas_recetadas medicinas_recetadas[]
+}
+
+model medicinas_recetadas {
+  id_medicinas_recetadas Int              @id @default(autoincrement())
+  id_salud               Int
+  id_inventario_salud    Int
+  inventario_salud       inventario_salud @relation(fields: [id_inventario_salud], references: [id_inventario_salud], onDelete: NoAction, onUpdate: NoAction, map: "fk_medicinas_recetadas_inventario_salud1")
+  salud                  salud            @relation(fields: [id_salud], references: [id_salud], onDelete: NoAction, onUpdate: NoAction, map: "fk_medicinas_recetadas_salud1")
+
+  @@index([id_inventario_salud], map: "fk_medicinas_recetadas_inventario_salud1_idx")
+  @@index([id_salud], map: "fk_medicinas_recetadas_salud1_idx")
 }
 
 enum asistencia_asistio {

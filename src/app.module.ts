@@ -7,7 +7,7 @@ import { PartController } from './part/part.controller';
 import { PartModule } from './part/part.module';
 import { RedisService } from './redis/redis.service';
 import { EstacaController } from './estaca/estaca.controller';
-// import { StatsController } from './stats/stats.controller';
+import { StatsController } from './stats/stats.controller';
 
 @Module({
   imports: [PrismaModule, WsModule, PartModule],
@@ -15,7 +15,7 @@ import { EstacaController } from './estaca/estaca.controller';
     AppController,
     PartController,
     EstacaController,
-    // StatsController,
+    StatsController,
   ],
   providers: [AppService, RedisService],
 })
