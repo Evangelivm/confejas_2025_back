@@ -142,6 +142,8 @@ model medicinas_recetadas {
   id_medicinas_recetadas Int              @id @default(autoincrement())
   id_salud               Int
   id_inventario_salud    Int
+  frecuencia             String?          @db.VarChar(255)
+  duracion               String?          @db.VarChar(255)
   inventario_salud       inventario_salud @relation(fields: [id_inventario_salud], references: [id_inventario_salud], onDelete: NoAction, onUpdate: NoAction, map: "fk_medicinas_recetadas_inventario_salud1")
   salud                  salud            @relation(fields: [id_salud], references: [id_salud], onDelete: NoAction, onUpdate: NoAction, map: "fk_medicinas_recetadas_salud1")
 

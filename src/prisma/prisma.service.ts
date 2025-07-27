@@ -372,6 +372,97 @@ export class PrismaService
       throw new Error('Error al consultar la lista ordenada de participantes');
     }
   }
+
+  // Método para obtener lista completa ordenada por compañía y sexo
+  async getParticipantesByCompania(id: string) {
+    try {
+      const participantes = await this.$queryRaw<
+        {
+          id: number;
+          nombres: string;
+          sexo: string;
+          estaca: string;
+          barrio: string;
+          edad: number;
+          comp: string;
+          tipo: string;
+          habitacion: string;
+          asistio: string;
+        }[]
+      >`
+        SELECT
+          a.id,
+          CONCAT(a.apellido, ", ", a.nombre) AS nombres,
+          a.sexo AS sexo,
+          f.estaca AS estaca,
+          e.barrio AS barrio,
+          a.edad,
+          a.tipo,
+          g.comp AS comp,
+          c.habitacion AS habitacion,
+          d.asistio AS asistio
+        FROM datos a
+        JOIN habitacion c ON a.id_habitacion = c.id_habitacion
+        JOIN asistencia d ON a.id = d.id_asistencia
+        JOIN barrio e ON a.id_barrio = e.id_barrio
+        JOIN estaca f ON a.id_estaca = f.id_estaca
+        JOIN comp g ON a.id_comp = g.id_comp
+        WHERE g.id_comp = ${id}
+        ORDER BY a.id_comp, a.sexo DESC, d.asistio DESC;
+      `;
+
+      console.log('Lista ordenada por compania consultada');
+      return participantes;
+    } catch (error) {
+      console.error(
+        'Error al consultar la lista ordenada por compania:',
+        error,
+      );
+      throw new Error(
+        'Error al consultar la lista ordenada de participantes por compania',
+      );
+    }
+  }
+
+  // Método para obtener los datos de salud de todos los participantes
+  async getSaludData() {
+    try {
+      const saludData = await this.$queryRaw<
+        {
+          id: number;
+          nombres: string;
+          edad: number;
+          sexo: string;
+          comp: string;
+          grupo_sang: string;
+          enf_cronica: string;
+          trat_med: string;
+          alergia_med: string;
+        }[]
+      >`
+        SELECT
+          a.id,
+          CONCAT(a.nombre, " ", a.apellido) AS nombres,
+          a.edad,
+          a.sexo,
+          REPLACE(g.comp, 'C', '') AS comp,
+          a.grupo_sang,
+          a.enf_cronica,
+          a.trat_med,
+          a.alergia_med
+        FROM datos a
+        JOIN comp g ON a.id_comp = g.id_comp
+        ORDER BY g.comp, nombres;
+      `;
+
+      console.log('\x1b[95mDatos de salud consultados\x1b[0m');
+      return saludData;
+    } catch (error) {
+      console.error('Error al consultar los datos de salud:', error);
+      throw new Error('Error al consultar los datos de salud');
+    }
+  }
+
   // async publishParticipantesOrdenados() {
   //   try {
   //     const participantes = await this.getParticipantesOrdenados();

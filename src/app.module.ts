@@ -8,9 +8,10 @@ import { PartModule } from './part/part.module';
 import { RedisService } from './redis/redis.service';
 import { EstacaController } from './estaca/estaca.controller';
 import { StatsController } from './stats/stats.controller';
+import { SaludModule } from './salud/salud.module';
 
 @Module({
-  imports: [PrismaModule, WsModule, PartModule],
+  imports: [PrismaModule, WsModule, PartModule, SaludModule],
   controllers: [
     AppController,
     PartController,
