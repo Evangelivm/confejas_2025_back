@@ -463,6 +463,45 @@ export class PrismaService
     }
   }
 
+  // Método para obtener los datos de salud de todos los participantes
+  async getFullSaludData(id: string) {
+    try {
+      const saludData = await this.$queryRaw<
+        {
+          id: number;
+          nombres: string;
+          edad: number;
+          sexo: string;
+          comp: string;
+          grupo_sang: string;
+          enf_cronica: string;
+          trat_med: string;
+          alergia_med: string;
+        }[]
+      >`
+        SELECT
+          a.id,
+          CONCAT(a.nombre, " ", a.apellido) AS nombres,
+          a.edad,
+          a.sexo,
+          CONCAT('Compañia ', REPLACE(g.comp, 'C', '')) AS comp,
+          a.grupo_sang,
+          a.enf_cronica,
+          a.trat_med,
+          a.alergia_med
+        FROM datos a
+        JOIN comp g ON a.id_comp = g.id_comp
+        ORDER BY g.comp, nombres;
+      `;
+
+      console.log('\x1b[95mDatos de salud completos consultados\x1b[0m');
+      return saludData;
+    } catch (error) {
+      console.error('Error al consultar los datos de salud completos:', error);
+      throw new Error('Error al consultar los datos de salud completos');
+    }
+  }
+
   // async publishParticipantesOrdenados() {
   //   try {
   //     const participantes = await this.getParticipantesOrdenados();
