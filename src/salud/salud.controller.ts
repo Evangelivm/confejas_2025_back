@@ -55,4 +55,19 @@ export class SaludController {
   createAtencion(@Body() data: any) {
     return this.saludService.createAtencion(data);
   }
+
+  @Get('atencion')
+  getAllAtencionDetails() {
+    return this.saludService.getAllAtencionDetails();
+  }
+
+  @Get('atencion/part/:idDatos')
+  getAtencionDetailsByDatosId(@Param('idDatos', ParseIntPipe) idDatos: number) {
+    return this.saludService.getAtencionDetailsByDatosId(idDatos);
+  }
+
+  @Get('atencion/:idSalud')
+  getAtencionDetails(@Param('idSalud', ParseIntPipe) idSalud: number) {
+    return this.saludService.getAtencionDetails(idSalud);
+  }
 }

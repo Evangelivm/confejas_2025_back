@@ -123,4 +123,141 @@ export class SaludService {
 
     return salud;
   }
+
+  async getAtencionDetails(idSalud: number) {
+    const atencion = await this.prisma.salud.findUnique({
+      where: { id_salud: idSalud },
+      select: {
+        id_salud: true,
+        fecha_consulta: true,
+        motivo_consulta: true,
+        tratamiento: true,
+        seguimiento: true,
+        fecha_seguimiento: true,
+        datos: {
+          select: {
+            id: true,
+            nombre: true,
+            apellido: true,
+          },
+        },
+        medicinas_recetadas: {
+          select: {
+            frecuencia: true,
+            duracion: true,
+            inventario_salud: {
+              select: {
+                nombre: true,
+                descripcion: true,
+                dosis: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!atencion) {
+      throw new NotFoundException(`Atencion with ID ${idSalud} not found`);
+    }
+
+    // Concatenate nombre and apellido
+    const formattedAtencion = {
+      ...atencion,
+      datos: {
+        id: atencion.datos.id,
+        nombre_completo: `${atencion.datos.nombre} ${atencion.datos.apellido}`,
+      },
+    };
+
+    return formattedAtencion;
+  }
+
+  async getAllAtencionDetails() {
+    const atenciones = await this.prisma.salud.findMany({
+      select: {
+        id_salud: true,
+        fecha_consulta: true,
+        motivo_consulta: true,
+        tratamiento: true,
+        seguimiento: true,
+        fecha_seguimiento: true,
+        datos: {
+          select: {
+            id: true,
+            nombre: true,
+            apellido: true,
+          },
+        },
+        medicinas_recetadas: {
+          select: {
+            frecuencia: true,
+            duracion: true,
+            inventario_salud: {
+              select: {
+                nombre: true,
+                descripcion: true,
+                dosis: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Concatenate nombre and apellido for each attention record
+    const formattedAtenciones = atenciones.map((atencion) => ({
+      ...atencion,
+      datos: {
+        id: atencion.datos.id,
+        nombre_completo: `${atencion.datos.nombre} ${atencion.datos.apellido}`,
+      },
+    }));
+
+    return formattedAtenciones;
+  }
+
+  async getAtencionDetailsByDatosId(idDatos: number) {
+    const atenciones = await this.prisma.salud.findMany({
+      where: { datos_id: idDatos },
+      select: {
+        id_salud: true,
+        fecha_consulta: true,
+        motivo_consulta: true,
+        tratamiento: true,
+        seguimiento: true,
+        fecha_seguimiento: true,
+        datos: {
+          select: {
+            id: true,
+            nombre: true,
+            apellido: true,
+          },
+        },
+        medicinas_recetadas: {
+          select: {
+            frecuencia: true,
+            duracion: true,
+            inventario_salud: {
+              select: {
+                nombre: true,
+                descripcion: true,
+                dosis: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const formattedAtenciones = atenciones.map((atencion) => ({
+      ...atencion,
+      datos: {
+        id: atencion.datos.id,
+        nombre_completo: `${atencion.datos.nombre} ${atencion.datos.apellido}`,
+      },
+    }));
+
+    return formattedAtenciones;
+  }
 }
