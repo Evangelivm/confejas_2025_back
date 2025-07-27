@@ -95,6 +95,7 @@ export class SaludService {
       datos_id,
       fecha_consulta,
       fecha_seguimiento,
+      unidadesDadas,
     } = data;
 
     const salud = await this.prisma.salud.create({
@@ -117,6 +118,7 @@ export class SaludService {
           duracion: medicamento.duracion,
         },
       });
+      await this.decreaseStock(medicamento.id, medicamento.unidadesDadas);
     }
 
     return salud;
