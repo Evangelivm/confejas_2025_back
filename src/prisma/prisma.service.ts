@@ -199,7 +199,7 @@ export class PrismaService
   async getSummaryByAge(edad: number) {
     return this.$queryRaw`
       SELECT 
-        a.id_comp, 
+        a.id_comp, c.comp,
         SUM(CASE WHEN a.sexo = 'H' THEN 1 ELSE 0 END) AS hombres, 
         SUM(CASE WHEN a.sexo = 'M' THEN 1 ELSE 0 END) AS mujeres 
       FROM 
@@ -208,6 +208,7 @@ export class PrismaService
         asistencia b 
       ON 
         a.id = b.datos_id 
+        JOIN comp c ON a.id_comp=c.id_comp
       WHERE 
         a.id_comp IN (
           SELECT id_comp 
