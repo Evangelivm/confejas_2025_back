@@ -12,25 +12,25 @@ export class PartService {
   ) {}
 
   // Método para actualizar un participante y notificar a través de WebSocket y Redis
-  // async updateParticipante(id: number, data: any) {
-  //   // 1. Actualiza los datos del participante en la base de datos
-  //   const updatedParticipante = await this.prisma.participante.update({
-  //     where: { id },
-  //     data,
-  //   });
+  async updateParticipante(id: number, data: any) {
+    // 1. Actualiza los datos del participante en la base de datos
+    const updatedParticipante = await this.prisma.datos.update({
+      where: { id },
+      data,
+    });
 
-  //   // 2. Notifica a través de WebSocket sobre la actualización
-  //   //await this.wsGateway.notifyUpdate(id_part);
+    // 2. Notifica a través de WebSocket sobre la actualización
+    // await this.wsGateway.notifyUpdate(id_part);
 
-  //   // 3. Publica el mensaje a un canal de Redis para la notificación en otros servicios
-  //   await this.redisService.publish(
-  //     'participant-update',
-  //     JSON.stringify({
-  //       message: `Actualización de participante con ID ${id}`,
-  //       updatedData: updatedParticipante,
-  //     }),
-  //   );
+    // 3. Publica el mensaje a un canal de Redis para la notificación en otros servicios
+    await this.redisService.publish(
+      'participant-update',
+      JSON.stringify({
+        message: `Actualización de participante con ID ${id}`,
+        updatedData: updatedParticipante,
+      }),
+    );
 
-  //   return updatedParticipante;
-  // }
+    return updatedParticipante;
+  }
 }

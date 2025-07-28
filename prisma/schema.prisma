@@ -9,7 +9,7 @@ datasource db {
 }
 
 model asistencia {
-  id_asistencia    Int                @id
+  id_asistencia    Int                @id @default(autoincrement())
   datos_id         Int
   asistio          asistencia_asistio
   id_participacion Int

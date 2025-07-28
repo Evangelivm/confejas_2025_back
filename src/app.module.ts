@@ -9,9 +9,18 @@ import { RedisService } from './redis/redis.service';
 import { EstacaController } from './estaca/estaca.controller';
 import { StatsController } from './stats/stats.controller';
 import { SaludModule } from './salud/salud.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [PrismaModule, WsModule, PartModule, SaludModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    PrismaModule,
+    WsModule,
+    PartModule,
+    SaludModule,
+  ],
   controllers: [
     AppController,
     PartController,
