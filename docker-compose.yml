@@ -6,8 +6,8 @@ services:
     ports:
       - '3000:3000'
     environment:
-      DATABASE_URL: mysql://root:XXXperu2020XXX.@161.132.54.103:3306/confejas_2025
-      CORS_ORIGIN: https://confejas2025.site
+      DATABASE_URL: mysql://root:XXXperu2020XXX.@ayala_back:3306/confejas_2025
+      CORS_ORIGIN: http://161.132.54.103
       REDIS_HOST: 161.132.54.103
       REDIS_PORT: 6379
     networks:
